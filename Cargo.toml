@@ -3,7 +3,11 @@ name = "fe-image-widget"
 version = "0.1.0"
 edition = "2018"
 authors = ["Ar37-rs <adyaro37@gmail.com>"]
+license = "MIT OR Apache-2.0"
 description = "fltk egui image widget support."
+documentation = "https://docs.rs/fe-image-widget"
+repository = "https://github.com/Ar37-rs/fe-image-widget"
+readme = "README.md"
 keywords = ["fltk-egui", "fltk", "egui"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
