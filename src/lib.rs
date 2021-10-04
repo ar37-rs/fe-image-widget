@@ -1,5 +1,5 @@
 use fltk_egui::{
-    egui::{Color32, Image, TextureId, Vec2},
+    egui::{Image, TextureId, Vec2},
     Painter,
 };
 
@@ -21,6 +21,7 @@ use fltk_egui::{
 use image::{GenericImageView, ImageError};
 
 #[cfg(any(
+    feature = "svg",
     feature = "png",
     feature = "jpeg",
     feature = "jpeg_rayon",
@@ -35,10 +36,33 @@ use image::{GenericImageView, ImageError};
     feature = "dds",
     feature = "farbfeld"
 ))]
-#[derive(Clone)]
 pub struct ImageWidget {
     texture_id: TextureId,
     _size: Vec2,
+}
+
+#[cfg(any(
+    feature = "png",
+    feature = "jpeg",
+    feature = "jpeg_rayon",
+    feature = "bmp",
+    feature = "ico",
+    feature = "gif",
+    feature = "webp",
+    feature = "tga",
+    feature = "pnm",
+    feature = "hdr",
+    feature = "dxt",
+    feature = "dds",
+    feature = "farbfeld"
+))]
+impl Clone for ImageWidget {
+    fn clone(&self) -> Self {
+        Self {
+            texture_id: self.texture_id.clone(),
+            _size: self._size.clone(),
+        }
+    }
 }
 
 #[cfg(any(
@@ -108,15 +132,9 @@ impl ImageWidget {
         {
             let dyn_image = image::load_from_memory(bytes)?;
             size = (dyn_image.width() as usize, dyn_image.height() as usize);
-            // pixels = dyn_image.into_rgba8().to_vec()
-            pixels = dyn_image
-                .to_rgba8()
-                .chunks(4)
-                .map(|p| Color32::from_rgba_unmultiplied(p[0], p[1], p[2], p[3]))
-                .collect::<Vec<_>>();
+            pixels = dyn_image.into_rgba8().to_vec();
         }
-        // let tex = painter.new_user_texture_rgba8(size, pixels, true);
-        let tex = painter.new_user_texture(size, &pixels, true);
+        let tex = painter.new_user_texture_rgba8(size, pixels, true);
         let feimage = Self {
             texture_id: tex,
             _size: Vec2::from((size.0 as f32, size.1 as f32)),
@@ -131,17 +149,59 @@ impl ImageWidget {
         {
             let dyn_image = image::load_from_memory(bytes)?;
             size = (dyn_image.width() as usize, dyn_image.height() as usize);
-            // pixels = dyn_image.into_rgba8().to_vec()
-            pixels = dyn_image
-                .to_rgba8()
-                .chunks(4)
-                .map(|p| Color32::from_rgba_unmultiplied(p[0], p[1], p[2], p[3]))
-                .collect::<Vec<_>>();
+            pixels = dyn_image.into_rgba8().to_vec();
         }
-        // painter.update_user_texture_rgba8_data(self.texture_id, pixels);
-        painter.update_user_texture_data(self.texture_id, &pixels);
+        painter.update_user_texture_rgba8_data(self.texture_id, pixels);
         self._size = Vec2::from((size.0 as f32, size.1 as f32));
         Ok(())
+    }
+}
+
+#[cfg(any(
+    feature = "png",
+    feature = "jpeg",
+    feature = "jpeg_rayon",
+    feature = "bmp",
+    feature = "ico",
+    feature = "gif",
+    feature = "webp",
+    feature = "tga",
+    feature = "pnm",
+    feature = "hdr",
+    feature = "dxt",
+    feature = "dds",
+    feature = "farbfeld"
+))]
+impl Into<SVGWidget> for ImageWidget {
+    fn into(self) -> SVGWidget {
+        SVGWidget {
+            texture_id: self.texture_id,
+            _size: self._size,
+        }
+    }
+}
+
+#[cfg(any(
+    feature = "png",
+    feature = "jpeg",
+    feature = "jpeg_rayon",
+    feature = "bmp",
+    feature = "ico",
+    feature = "gif",
+    feature = "webp",
+    feature = "tga",
+    feature = "pnm",
+    feature = "hdr",
+    feature = "dxt",
+    feature = "dds",
+    feature = "farbfeld"
+))]
+impl From<SVGWidget> for ImageWidget {
+    fn from(t: SVGWidget) -> ImageWidget {
+        ImageWidget {
+            texture_id: t.texture_id,
+            _size: t._size,
+        }
     }
 }
 
@@ -156,11 +216,35 @@ pub use usvg::Options;
 #[cfg(feature = "svg")]
 use usvg::{OptionsRef, Tree};
 
-#[cfg(feature = "svg")]
-#[derive(Clone)]
+#[cfg(any(
+    feature = "svg",
+    feature = "png",
+    feature = "jpeg",
+    feature = "jpeg_rayon",
+    feature = "bmp",
+    feature = "ico",
+    feature = "gif",
+    feature = "webp",
+    feature = "tga",
+    feature = "pnm",
+    feature = "hdr",
+    feature = "dxt",
+    feature = "dds",
+    feature = "farbfeld"
+))]
 pub struct SVGWidget {
     texture_id: TextureId,
     _size: Vec2,
+}
+
+#[cfg(feature = "svg")]
+impl Clone for SVGWidget {
+    fn clone(&self) -> Self {
+        Self {
+            texture_id: self.texture_id.clone(),
+            _size: self._size.clone(),
+        }
+    }
 }
 
 #[cfg(feature = "svg")]
@@ -223,15 +307,9 @@ impl SVGWidget {
                 }
             }
             size = (pixmap_size.width() as usize, pixmap_size.height() as usize);
-            // pixels = pixmap.data().to_vec();
-            pixels = pixmap
-                .data()
-                .chunks(4)
-                .map(|p| Color32::from_rgba_unmultiplied(p[0], p[1], p[2], p[3]))
-                .collect::<Vec<_>>();
+            pixels = pixmap.data().to_vec();
         }
-        // let tex = painter.new_user_texture_rgba8(size, pixels, true);
-        let tex = painter.new_user_texture(size, &pixels, true);
+        let tex = painter.new_user_texture_rgba8(size, pixels, true);
         let feimage = Self {
             texture_id: tex,
             _size: Vec2::from((size.0 as f32, size.1 as f32)),
@@ -273,17 +351,30 @@ impl SVGWidget {
             }
 
             size = (pixmap_size.width() as usize, pixmap_size.height() as usize);
-            // pixels = pixmap.data().to_vec();
-            pixels = pixmap
-                .data()
-                .chunks(4)
-                .map(|p| Color32::from_rgba_unmultiplied(p[0], p[1], p[2], p[3]))
-                .collect::<Vec<_>>();
+            pixels = pixmap.data().to_vec();
         }
-        // egui-fltk next release will be enabled.
-        // painter.update_user_texture_rgba8_data(self.texture_id, pixels);
-        painter.update_user_texture_data(self.texture_id, &pixels);
+        painter.update_user_texture_rgba8_data(self.texture_id, pixels);
         self._size = Vec2::from((size.0 as f32, size.1 as f32));
         Ok(())
+    }
+}
+
+#[cfg(feature = "svg")]
+impl Into<ImageWidget> for SVGWidget {
+    fn into(self) -> ImageWidget {
+        ImageWidget {
+            texture_id: self.texture_id,
+            _size: self._size,
+        }
+    }
+}
+
+#[cfg(feature = "svg")]
+impl From<ImageWidget> for SVGWidget {
+    fn from(t: ImageWidget) -> SVGWidget {
+        SVGWidget {
+            texture_id: t.texture_id,
+            _size: t._size,
+        }
     }
 }
