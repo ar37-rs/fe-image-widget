@@ -10,4 +10,4 @@ publish = false
 # fltk-egui = { version = "0.3", features = ["fltk-bundled"] }
 fltk-egui = { version = "0.3" }
 # make sure to enable features image format manually
-fe-image-widget = { path = "../../../fe-image-widget", default-features = false, features = ["svg"] }
+fe-image-widget = { version = "0.1", default-features = false, features = ["svg"] }

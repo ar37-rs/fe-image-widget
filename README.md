@@ -4,7 +4,7 @@
 [![Documentation](https://docs.rs/fe-image-widget/badge.svg)](https://docs.rs/fe-image-widget)
 [![CI](https://github.com/Ar37-rs/fe-image-widget/actions/workflows/ci.yml/badge.svg)](https://github.com/Ar37-rs/fe-image-widget/actions/workflows/ci.yml)
 
-Image widget support for [fltk-egui](https://github.com/fltk-rs/fltk-egui).
+Image widget support for [fltk-egui](https://github.com/fltk-rs/fltk-egui)
 
 
 ## Examples
