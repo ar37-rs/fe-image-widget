@@ -1,0 +1,15 @@
+[package]
+name = "netimage_widget"
+version = "0.1.0"
+edition = "2018"
+authors = ["Ar37-rs <adyaro37@gmail.com>"]
+publish = false
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# fltk-egui = { version = "0.3", features = ["fltk-bundled"] }
+fltk-egui = { version = "0.3" }
+# make sure to enable features image format manually
+fe-image-widget = { path = "../../../fe-image-widget", default-features = false, features = ["jpeg"] }
+ureq = "2"
+asynchron = "0.9"
