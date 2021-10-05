@@ -48,7 +48,7 @@ fn main() {
         }
     });
 
-    let mut png: Option<ImageWidget> = None;
+    let mut jpeg: Option<ImageWidget> = None;
     let start_time = Instant::now();
     let mut quit = false;
     let mut http: Option<Futurized<(), ResponseData>> = None;
@@ -76,10 +76,10 @@ fn main() {
                         btn_label = "fetching...";
                     }
                     Progress::Completed(data) => {
-                        if let Some(_png) = png.as_mut() {
-                            _png.update_image(&mut painter, &data.content).unwrap();
+                        if let Some(_jpeg) = jpeg.as_mut() {
+                            _jpeg.update_image(&mut painter, &data.content).unwrap();
                         } else {
-                            png = Some(ImageWidget::new(&mut painter, &data.content).unwrap())
+                            jpeg = Some(ImageWidget::new(&mut painter, &data.content).unwrap())
                         }
                     }
                     Progress::Error(e) => {
@@ -102,9 +102,9 @@ fn main() {
         egui::CentralPanel::default().show(&egui_ctx, |ui| {
             ui.heading("My egui Application");
             egui::ScrollArea::auto_sized().show(ui, |ui| {
-                if let Some(ref png) = png {
+                if let Some(ref jpeg) = jpeg {
                     if ui
-                        .add(png.widget())
+                        .add(jpeg.widget())
                         .interact(Sense::click())
                         .on_hover_cursor(egui::CursorIcon::PointingHand)
                         .clicked()
